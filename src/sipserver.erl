@@ -61,9 +61,10 @@ start(normal, [AppModule]) ->
     sup_error_logger:start(),
     catch ssl:start(),
     %% We seed SSL better after starting our configuration subsystem
-    ssl:seed([
-	      io_lib:format("~p", [now()])
-	     ]),
+    %% There is no seed function in new ssl module
+%    ssl:seed([
+%	      io_lib:format("~p", [now()])
+%	     ]),
     mnesia:start(),
     ok = init_statistics(),
     case sipserver_sup:start_link(AppModule, []) of
@@ -84,12 +85,13 @@ start(normal, [AppModule]) ->
 	    ok = gen_server:call(yxa_monitor, {add_mnesia_tables, MnesiaTables}),
 	    {ok, Supervisor} = sipserver_sup:start_extras(Supervisor, AppModule, AppSupdata),
 	    %% now that everything is started, seed ssl with more stuff
-	    ssl:seed([
-		      io_lib:format("~p ~p",
-				    [now(),
-				     yxa_config:list()
-				    ])
-		     ]),
+	    %% There is no seed function in new ssl module
+%	    ssl:seed([
+%		      io_lib:format("~p ~p",
+%				    [now(),
+%				     yxa_config:list()
+%				    ])
+%		     ]),
 	    {ok, Supervisor} = sipserver_sup:start_transportlayer(Supervisor),
 	    logger:log(normal, "proxy started (YXA version ~s)", [version:get_version()]),
 	    {ok, Supervisor};
